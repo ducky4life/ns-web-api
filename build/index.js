@@ -1,0 +1,81 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var nsapi = require("nsapi");
+console.log("Loading NSAPI...");
+function nation_api(api, nation, shards, shardParams) {
+    return api.nationRequest(nation, shards, shardParams).then((data) => {
+        return shards.map((shard) => data[shard]);
+    });
+}
+function region_api(api, region, shards, shardParams) {
+    return api.regionRequest(region, shards, shardParams).then((data) => {
+        return shards.map((shard) => data[shard]);
+    });
+}
+function world_api(api, shards, shardParams) {
+    return api.worldRequest(shards, shardParams).then((data) => {
+        return shards.map((shard) => data[shard]);
+    });
+}
+function api_request(api, api_type, query, shards, shardParams) {
+    if (api_type === "nation") {
+        return nation_api(api, query, shards, shardParams);
+    }
+    else if (api_type === "region") {
+        return region_api(api, query, shards, shardParams);
+    }
+    else if (api_type === "world") {
+        return world_api(api, shards, shardParams);
+    }
+    else {
+        return Promise.resolve(["Invalid API type specified."]);
+    }
+}
+function output(e) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const useragent = document.querySelector('#useragent').value;
+        if (!useragent) {
+            alert("Please provide a useragent.");
+            return;
+        }
+        var api = new nsapi.NsApi(useragent);
+        const output = document.querySelector('#output');
+        output.innerHTML = '';
+        const api_type = document.querySelector('#api').value;
+        const query = document.querySelector('#query').value;
+        const shard_input = document.querySelector('#shards').value.split('\n');
+        const shard_params = new Object();
+        document.querySelector('#shard-params').value.split(',').forEach((param) => {
+            const [key, value] = param.split('=');
+            if (key && value) {
+                shard_params[key] = value;
+            }
+        });
+        console.log(api, api_type, query, shard_input.length, shard_params);
+        try {
+            if (shard_input[0] === "") {
+                output.innerHTML += `<h3>Please provide at least one shard.</h3>`;
+                return;
+            }
+            const results = yield api_request(api, api_type, query, shard_input, shard_params);
+            console.log(results);
+            results.forEach((result) => {
+                output.innerHTML += `<h3>${result}</h3><br>`;
+            });
+        }
+        catch (error) {
+            console.error("Error fetching API data:", error);
+            output.innerHTML = `<h3>Error fetching API data</h3>`;
+        }
+    });
+}
+document.querySelector('#submit').addEventListener('click', output);
