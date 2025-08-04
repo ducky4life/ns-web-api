@@ -21,6 +21,7 @@
   "homepage": "https://github.com/ducky4life/ns-web-api#readme",
   "dependencies": {
     "browserify": "^17.0.1",
-    "nsapi": "^0.2.0"
+    "nsapi": "^0.2.0",
+    "typescript": "^5.9.2"
   }
 }
