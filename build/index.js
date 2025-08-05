@@ -112,6 +112,9 @@ function output(e) {
             }
             const results = yield api_request(api, api_type, query, shard_input, shard_params, auth);
             console.log(results);
+            if (api_type === "nation_commands") {
+                JSON.stringify(results);
+            }
             results.forEach((result) => {
                 output.innerHTML += `<h3>${result}</h3><br>`;
             });
