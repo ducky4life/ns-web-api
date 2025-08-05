@@ -36,3 +36,14 @@ make sure you have node.js and npm installed
     or use `tsc --watch` in a development environment
 6. navigate to `build/index.html` and enjoy
 
+## License
+
+ns-web-api is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
+
+ns-web-api uses [node-nsapi](https://github.com/auralia/node-nsapi) to access the NationStates API. Its NOTICE file will be provided below.
+
+```
+node-nsapi  
+Copyright (C) 2016-2020 Auralia
+```
+
