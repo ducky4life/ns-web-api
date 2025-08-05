@@ -36,6 +36,20 @@ make sure you have node.js and npm installed
     or use `tsc --watch` in a development environment
 6. navigate to `build/index.html` and enjoy
 
+### todo
+
+- [ ] private nation requests
+- [ ] nation commands
+- [ ] using PIN for authentication
+- [ ] world assembly api
+- [ ] trading cards api
+- [ ] toggle api caching
+- [ ] customise cache seconds
+- [ ] identify each result with its shard
+- [ ] sort results
+- [ ] export results to file
+- [ ] copy results to clipboard
+
 ## License
 
 ns-web-api is licensed under the [Apache License 2.0](http://www.apache.org/licenses/LICENSE-2.0).
