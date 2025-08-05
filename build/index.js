@@ -12,9 +12,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 var nsapi = require("nsapi");
 console.log("Loading NSAPI...");
-function nation_api(api, nation, shards, shardParams) {
+function nation_api(api, nation, shards, shardParams, auth) {
     return __awaiter(this, void 0, void 0, function* () {
-        const data = yield api.nationRequest(nation, shards, shardParams);
+        const data = yield api.nationRequest(nation, shards, shardParams, auth);
         return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
@@ -36,9 +36,9 @@ function world_assembly_api(api, council, shards, shardParams) {
         return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
-function api_request(api, api_type, query, shards, shardParams) {
+function api_request(api, api_type, query, shards, shardParams, auth) {
     if (api_type === "nation") {
-        return nation_api(api, query, shards, shardParams);
+        return nation_api(api, query, shards, shardParams, auth);
     }
     else if (api_type === "region") {
         return region_api(api, query, shards, shardParams);
@@ -71,8 +71,13 @@ function output(e) {
         output.innerHTML = '';
         const api_type = document.querySelector('#api').value;
         const query = document.querySelector('#query').value;
+        const password = document.querySelector('#password').value;
         const shard_input = document.querySelector('#shards').value.split('\n');
         const shard_params = new Object();
+        var auth = {
+            password: password,
+            updatePin: true
+        };
         document.querySelector('#shard-params').value.split(',').forEach((param) => {
             const [key, value] = param.split('=');
             if (key && value) {
@@ -84,7 +89,7 @@ function output(e) {
                 output.innerHTML += `<h3>Please provide at least one shard.</h3>`;
                 return;
             }
-            const results = yield api_request(api, api_type, query, shard_input, shard_params);
+            const results = yield api_request(api, api_type, query, shard_input, shard_params, auth);
             console.log(results);
             results.forEach((result) => {
                 output.innerHTML += `<h3>${result}</h3><br>`;

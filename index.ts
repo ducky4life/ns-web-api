@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NsApi } from "nsapi";
+import { Auth, NsApi } from "nsapi";
 var nsapi = require("nsapi");
 console.log("Loading NSAPI...");
 
 
-async function nation_api(api: NsApi, nation: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
-    const data = await api.nationRequest(nation, shards, shardParams);
+async function nation_api(api: NsApi, nation: string, shards: string[], shardParams?: {[paramName: string]: string;}, auth?: Auth): Promise<string[]> {
+    const data = await api.nationRequest(nation, shards, shardParams, auth);
     return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
@@ -37,10 +37,9 @@ async function world_assembly_api(api: NsApi, council: number, shards: string[],
     return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
-
-function api_request(api: NsApi, api_type: string, query: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
+function api_request(api: NsApi, api_type: string, query: string, shards: string[], shardParams?: { [paramName: string]: string; }, auth?: Auth): Promise<string[]> {
     if (api_type === "nation") {
-        return nation_api(api, query, shards, shardParams);
+        return nation_api(api, query, shards, shardParams, auth);
     } else if (api_type === "region") {
         return region_api(api, query, shards, shardParams);
     } else if (api_type === "world") {
@@ -74,8 +73,14 @@ async function output(e: Event) {
 
     const api_type = (document.querySelector('#api') as HTMLSelectElement).value;
     const query = (document.querySelector('#query') as HTMLTextAreaElement).value;
+    const password = (document.querySelector('#password') as HTMLInputElement).value;
     const shard_input = (document.querySelector('#shards') as HTMLTextAreaElement).value.split('\n');
     const shard_params = new Object() as {[paramName: string]: string;};
+
+    var auth: Auth = {
+        password: password,
+        updatePin: true
+    };
 
     (document.querySelector('#shard-params') as HTMLTextAreaElement).value.split(',').forEach((param: string) => {
         const [key, value] = param.split('=');
@@ -90,7 +95,7 @@ async function output(e: Event) {
             return;
         }
         
-        const results: string[] = await api_request(api, api_type, query, shard_input, shard_params);
+        const results: string[] = await api_request(api, api_type, query, shard_input, shard_params, auth);
         console.log(results);
 
         results.forEach((result: string) => {
