@@ -23,7 +23,7 @@
         <div style="display: flex; place-content: center; padding-top: 30px;">
             <div style="padding-right: 30px;">
                 <p for="useragent">useragent:</p><br>
-                <textarea id="useragent" spellcheck="false" style="height: 5vh;"></textarea>
+                <textarea id="useragent" style="height: 5vh;"></textarea>
             </div>
             
             <div>
@@ -32,8 +32,9 @@
                     <option value="nation">nation</option>
                     <option value="region">region</option>
                     <option value="world">world</option>
+                    <option value="world_assembly">WA</option>
                 </select>
-                <a href="https://www.nationstates.net/pages/api.html#nationapi" id="shard_link">shards</a>
+                <a href="https://www.nationstates.net/pages/api.html" id="shard_link">shards</a>
             </div>
             
         </div><br>
@@ -42,7 +43,7 @@
 
         <div id="textarea-container" style="display: flex; place-content: center; padding-top: 50px;">
             <div style="padding-right: 50px;">
-                <p>query (nation or region):</p><br>
+                <p>query (nation/region/WA council: 1 - SC, 2 - GA):</p><br>
                 <textarea id="query" autocomplete="off" spellcheck="false"></textarea>
             </div>
 

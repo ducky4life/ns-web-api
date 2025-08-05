@@ -41,11 +41,11 @@ make sure you have node.js and npm installed
 - [ ] private nation requests
 - [ ] nation commands
 - [ ] using PIN for authentication
-- [ ] world assembly api
+- [x] world assembly api
 - [ ] trading cards api
 - [ ] toggle api caching
 - [ ] customise cache seconds
-- [ ] identify each result with its shard
+- [x] identify each result with its shard
 - [ ] sort results
 - [ ] export results to file
 - [ ] copy results to clipboard

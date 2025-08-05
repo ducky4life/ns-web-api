@@ -17,22 +17,24 @@ var nsapi = require("nsapi");
 console.log("Loading NSAPI...");
 
 
-function nation_api(api: NsApi, nation: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
-    return api.nationRequest(nation, shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
-    });
+async function nation_api(api: NsApi, nation: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
+    const data = await api.nationRequest(nation, shards, shardParams);
+    return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
-function region_api(api: NsApi, region: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
-    return api.regionRequest(region, shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
-    });
+async function region_api(api: NsApi, region: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
+    const data = await api.regionRequest(region, shards, shardParams);
+    return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
-function world_api(api: NsApi, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
-    return api.worldRequest(shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
-    });
+async function world_api(api: NsApi, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
+    const data = await api.worldRequest(shards, shardParams);
+    return shards.map((shard) => `${shard}: ${data[shard]}`);
+}
+
+async function world_assembly_api(api: NsApi, council: number, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
+    const data = await api.worldAssemblyRequest(council, shards, shardParams);
+    return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
 
@@ -43,6 +45,8 @@ function api_request(api: NsApi, api_type: string, query: string, shards: string
         return region_api(api, query, shards, shardParams);
     } else if (api_type === "world") {
         return world_api(api, shards, shardParams);
+    } else if (api_type === "world_assembly") {
+        return world_assembly_api(api, parseInt(query), shards, shardParams);
     } else {
         return Promise.resolve(["Invalid API type specified."]);
     }
@@ -51,7 +55,7 @@ function api_request(api: NsApi, api_type: string, query: string, shards: string
 const shard_link = document.querySelector('#shard_link') as HTMLAnchorElement;
 shard_link.onclick = (e: MouseEvent) => {
     e.preventDefault();
-    const url = `https://www.nationstates.net/pages/api.html#nationapi`;
+    const url = `https://www.nationstates.net/pages/api.html`;
     window.open(url, '_blank');
 }
 
@@ -79,8 +83,6 @@ async function output(e: Event) {
             shard_params[key] = value;
         }
     });
-
-    console.log(api, api_type, query, shard_input.length, shard_params);
 
     try {
         if (shard_input[0] === "") {

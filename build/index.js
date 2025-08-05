@@ -13,18 +13,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var nsapi = require("nsapi");
 console.log("Loading NSAPI...");
 function nation_api(api, nation, shards, shardParams) {
-    return api.nationRequest(nation, shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield api.nationRequest(nation, shards, shardParams);
+        return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
 function region_api(api, region, shards, shardParams) {
-    return api.regionRequest(region, shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield api.regionRequest(region, shards, shardParams);
+        return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
 function world_api(api, shards, shardParams) {
-    return api.worldRequest(shards, shardParams).then((data) => {
-        return shards.map((shard) => data[shard]);
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield api.worldRequest(shards, shardParams);
+        return shards.map((shard) => `${shard}: ${data[shard]}`);
+    });
+}
+function world_assembly_api(api, council, shards, shardParams) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield api.worldAssemblyRequest(council, shards, shardParams);
+        return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
 function api_request(api, api_type, query, shards, shardParams) {
@@ -37,6 +46,9 @@ function api_request(api, api_type, query, shards, shardParams) {
     else if (api_type === "world") {
         return world_api(api, shards, shardParams);
     }
+    else if (api_type === "world_assembly") {
+        return world_assembly_api(api, parseInt(query), shards, shardParams);
+    }
     else {
         return Promise.resolve(["Invalid API type specified."]);
     }
@@ -44,7 +56,7 @@ function api_request(api, api_type, query, shards, shardParams) {
 const shard_link = document.querySelector('#shard_link');
 shard_link.onclick = (e) => {
     e.preventDefault();
-    const url = `https://www.nationstates.net/pages/api.html#nationapi`;
+    const url = `https://www.nationstates.net/pages/api.html`;
     window.open(url, '_blank');
 };
 function output(e) {
@@ -67,7 +79,6 @@ function output(e) {
                 shard_params[key] = value;
             }
         });
-        console.log(api, api_type, query, shard_input.length, shard_params);
         try {
             if (shard_input[0] === "") {
                 output.innerHTML += `<h3>Please provide at least one shard.</h3>`;
