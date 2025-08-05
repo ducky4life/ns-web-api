@@ -48,6 +48,13 @@ function api_request(api: NsApi, api_type: string, query: string, shards: string
     }
 }
 
+const shard_link = document.querySelector('#shard_link') as HTMLAnchorElement;
+shard_link.onclick = (e: MouseEvent) => {
+    e.preventDefault();
+    const url = `https://www.nationstates.net/pages/api.html#nationapi`;
+    window.open(url, '_blank');
+}
+
 async function output(e: Event) {
 
     const useragent = (document.querySelector('#useragent') as HTMLTextAreaElement).value

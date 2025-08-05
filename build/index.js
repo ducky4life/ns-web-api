@@ -1,4 +1,5 @@
 "use strict";
+// Copyright 2025 Ducky
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,6 +41,12 @@ function api_request(api, api_type, query, shards, shardParams) {
         return Promise.resolve(["Invalid API type specified."]);
     }
 }
+const shard_link = document.querySelector('#shard_link');
+shard_link.onclick = (e) => {
+    e.preventDefault();
+    const url = `https://www.nationstates.net/pages/api.html#nationapi`;
+    window.open(url, '_blank');
+};
 function output(e) {
     return __awaiter(this, void 0, void 0, function* () {
         const useragent = document.querySelector('#useragent').value;
