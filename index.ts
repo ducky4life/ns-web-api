@@ -22,6 +22,11 @@ async function nation_api(api: NsApi, nation: string, shards: string[], shardPar
     return shards.map((shard) => `${shard}: ${data[shard]}`);
 }
 
+async function nation_api_command(api: NsApi, auth: Auth, nation: string, command: string, commandParams?: {[paramName: string]: string;}, prepare?: boolean): Promise<string[]> {
+    const data = await api.nationCommandRequest(auth, nation, command, commandParams, prepare);
+    return [data];
+}
+
 async function region_api(api: NsApi, region: string, shards: string[], shardParams?: {[paramName: string]: string;}): Promise<string[]> {
     const data = await api.regionRequest(region, shards, shardParams);
     return shards.map((shard) => `${shard}: ${data[shard]}`);
@@ -46,8 +51,22 @@ function api_request(api: NsApi, api_type: string, query: string, shards: string
         return world_api(api, shards, shardParams);
     } else if (api_type === "world_assembly") {
         return world_assembly_api(api, parseInt(query), shards, shardParams);
+    } else if (api_type === "nation_commands") {
+        const command = shards[0]
+
+        if (!auth) {
+            return Promise.reject(["Authentication is required."]);
+        }
+        if (!command) {
+            return Promise.reject(["Command is required for nation_commands."]);
+        }
+        if (command === "issue") {
+            return nation_api_command(api, auth, query, command, shardParams, false);
+        } else {
+            return nation_api_command(api, auth, query, command, shardParams, true);
+        }
     } else {
-        return Promise.resolve(["Invalid API type specified."]);
+        return Promise.reject(["Invalid API type selected."]);
     }
 }
 
@@ -82,7 +101,7 @@ async function output(e: Event) {
         updatePin: true
     };
 
-    (document.querySelector('#shard-params') as HTMLTextAreaElement).value.split(',').forEach((param: string) => {
+    (document.querySelector('#shard-params') as HTMLTextAreaElement).value.split('&').forEach((param: string) => {
         const [key, value] = param.split('=');
         if (key && value) {
             shard_params[key] = value;
@@ -98,6 +117,9 @@ async function output(e: Event) {
         const results: string[] = await api_request(api, api_type, query, shard_input, shard_params, auth);
         console.log(results);
 
+        if (api_type === "nation_commands") {
+            JSON.stringify(results)
+        }    
         results.forEach((result: string) => {
             output.innerHTML += `<h3>${result}</h3><br>`;
         });

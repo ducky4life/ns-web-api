@@ -18,6 +18,12 @@ function nation_api(api, nation, shards, shardParams, auth) {
         return shards.map((shard) => `${shard}: ${data[shard]}`);
     });
 }
+function nation_api_command(api, auth, nation, command, commandParams, prepare) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield api.nationCommandRequest(auth, nation, command, commandParams, prepare);
+        return [data];
+    });
+}
 function region_api(api, region, shards, shardParams) {
     return __awaiter(this, void 0, void 0, function* () {
         const data = yield api.regionRequest(region, shards, shardParams);
@@ -49,8 +55,23 @@ function api_request(api, api_type, query, shards, shardParams, auth) {
     else if (api_type === "world_assembly") {
         return world_assembly_api(api, parseInt(query), shards, shardParams);
     }
+    else if (api_type === "nation_commands") {
+        const command = shards[0];
+        if (!auth) {
+            return Promise.reject(["Authentication is required."]);
+        }
+        if (!command) {
+            return Promise.reject(["Command is required for nation_commands."]);
+        }
+        if (command === "issue") {
+            return nation_api_command(api, auth, query, command, shardParams, false);
+        }
+        else {
+            return nation_api_command(api, auth, query, command, shardParams, true);
+        }
+    }
     else {
-        return Promise.resolve(["Invalid API type specified."]);
+        return Promise.reject(["Invalid API type selected."]);
     }
 }
 const shard_link = document.querySelector('#shard_link');
@@ -78,7 +99,7 @@ function output(e) {
             password: password,
             updatePin: true
         };
-        document.querySelector('#shard-params').value.split(',').forEach((param) => {
+        document.querySelector('#shard-params').value.split('&').forEach((param) => {
             const [key, value] = param.split('=');
             if (key && value) {
                 shard_params[key] = value;

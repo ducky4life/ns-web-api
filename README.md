@@ -39,7 +39,7 @@ make sure you have node.js and npm installed
 ### todo
 
 - [x] private nation requests
-- [ ] nation commands
+- [x] nation commands
 - [ ] using PIN for authentication
 - [x] world assembly api
 - [ ] trading cards api
