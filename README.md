@@ -43,10 +43,10 @@ make sure you have node.js and npm installed
 - [ ] using PIN for authentication
 - [x] world assembly api
 - [ ] trading cards api
-- [ ] toggle api caching
 - [ ] customise cache seconds
 - [x] identify each result with its shard
 - [ ] sort results
+- [ ] jsonify results
 - [ ] export results to file
 - [ ] copy results to clipboard
 
