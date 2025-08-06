@@ -95,7 +95,8 @@ async function output(e: Event) {
     const password = (document.querySelector('#password') as HTMLInputElement).value;
     const shard_input = (document.querySelector('#shards') as HTMLTextAreaElement).value.split('\n');
     const shard_params = new Object() as {[paramName: string]: string;};
-
+    const disable_cache = (document.querySelector('#disable_cache_toggle') as HTMLInputElement).value;
+    
     var auth: Auth = {
         password: password,
         updatePin: true
@@ -112,6 +113,10 @@ async function output(e: Event) {
         if (shard_input[0] === "") {
             output.innerHTML += `<h3>Please provide at least one shard.</h3>`;
             return;
+        }
+
+        if (disable_cache === 'on') {
+            api.cacheApiRequests = false;
         }
         
         const results: string[] = await api_request(api, api_type, query, shard_input, shard_params, auth);
