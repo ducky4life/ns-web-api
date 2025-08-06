@@ -43,11 +43,11 @@ make sure you have node.js and npm installed
 - [ ] using PIN for authentication
 - [x] world assembly api
 - [ ] trading cards api
-- [ ] customise cache seconds
+- [ ] toggle caching
 - [x] identify each result with its shard
 - [ ] sort results
 - [ ] jsonify results
-- [ ] export results to file
+- [ ] export results to file (toggle)
 - [ ] copy results to clipboard
 
 ## License
